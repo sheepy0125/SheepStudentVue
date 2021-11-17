@@ -1,5 +1,5 @@
 """
-StudentVue Data Serializer
+StudentVue Data Viewer
 Created by sheepy0125
 16/11/2021
 """
@@ -10,7 +10,6 @@ from config_parser import parse
 from studentvue import StudentVue
 from json import loads, dumps
 from collections import OrderedDict
-from pandas import DataFrame
 
 CONFIG = parse()
 
@@ -29,7 +28,7 @@ except Exception as error:
 grades: list[OrderedDict] | None = None
 try:
     grades = student_vue.get_gradebook()
-except Exception as error:
+except Exception as error:DEFAULT_CONFIG_PATH
     Logger.fatal("Failed to get grades from StudentVue!")
     Logger.log_error(error)
 

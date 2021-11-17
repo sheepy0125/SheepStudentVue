@@ -1,5 +1,5 @@
 """
-StudentVue Data Serializer Tools
+StudentVue Data Viewer Tools
 Created by sheepy0125
 16/11/2021
 """

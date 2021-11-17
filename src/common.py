@@ -1,5 +1,5 @@
 """
-StudentVue Data Serializer Common Files
+StudentVue Data Viewer Common Files
 Created by sheepy0125
 16/11/2021
 """

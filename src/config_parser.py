@@ -1,5 +1,5 @@
 """
-StudentVue Data Serializer Config Parser
+StudentVue Data Viewer Config Parser
 Created by sheepy0125
 16/11/2021
 """
