@@ -6,9 +6,9 @@ Created by sheepy0125
 
 ### Global imports ###
 from pathlib import Path
-from config_parser import parse
+from tools import Logger
 
 ### Constants ###
 ROOT_PATH = Path(__file__).parent.parent
 DEFAULT_CONFIG_PATH = Path(ROOT_PATH / "config.jsonc")
-CONFIG = parse()
+Logger.log(f"Current working directory: {ROOT_PATH}")

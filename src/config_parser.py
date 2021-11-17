@@ -6,8 +6,7 @@ Created by sheepy0125
 
 from jsonc_parser.parser import JsoncParser
 from jsonc_parser.errors import FileError, ParserError
-from common import DEFAULT_CONFIG_PATH, Path
-from tools import Logger
+from common import DEFAULT_CONFIG_PATH, Path, Logger
 
 ### Parse ###
 def parse(config_path: Path | str | None = None) -> dict:
@@ -23,7 +22,7 @@ def parse(config_path: Path | str | None = None) -> dict:
         with open(config_path, "r") as config_file:
             config: dict = dict(JsoncParser.parse_str(config_file.read()))
     except FileNotFoundError:
-        Logger.fatal(f"Config filepath ({config_path!s}) doesn't exist")
+        Logger.fatal(f"Config filepath ({config_path}) doesn't exist")
     except ParserError:
         Logger.fatal(f"Config file isn't a valid JSONC file")
     else:
@@ -40,21 +39,19 @@ def parse(config_path: Path | str | None = None) -> dict:
 def check_config(config: dict) -> bool:
     """Check config, return if valid"""
 
+    # Used for reference later for logging
+    error = None
+
     try:
-        assert config["username"] is str, "Username is not a string"
+        assert isinstance(config["username"], str), "Username is not a string"
         assert config["username"] != "", "Username is empty"
         assert config["username"].isdigit(), "Username is not a number"
         assert len(config["username"]) == 9, "Username is not 9 characters long"
-        assert config["password"] is str, "Password is not a string"
-        assert config["domain"] is str, "Domain is not a string"
+        assert isinstance(config["password"], str), "Password is not a string"
+        assert isinstance(config["domain"], str), "Domain is not a string"
 
-    except (AssertionError, KeyError) as error:
-        pass  # Will handle outside nested try/except
-
-    except Exception as error:
-        Logger.fatal(
-            "Config file is invalid, but not for the correct reason... what did you do?"
-        )
+    except Exception as exc:
+        error = exc
 
     else:
         return True
