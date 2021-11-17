@@ -5,13 +5,13 @@ Created by sheepy0125
 """
 
 ### Setup ###
-from common import DEFAULT_CONFIG_PATH, Path, Logger
+from common import DEFAULT_CONFIG_PATH, ROOT_PATH, Logger
 from config_parser import parse
 from studentvue import StudentVue
 from json import loads, dumps
 from collections import OrderedDict
 
-CONFIG = parse()
+CONFIG = parse(DEFAULT_CONFIG_PATH)
 
 # Get StudentVue object
 try:
@@ -28,7 +28,7 @@ except Exception as error:
 grades: list[OrderedDict] | None = None
 try:
     grades = student_vue.get_gradebook()
-except Exception as error:DEFAULT_CONFIG_PATH
+except Exception as error:
     Logger.fatal("Failed to get grades from StudentVue!")
     Logger.log_error(error)
 
@@ -36,3 +36,9 @@ except Exception as error:DEFAULT_CONFIG_PATH
 grades = loads(dumps(grades), object_pairs_hook=OrderedDict)
 
 Logger.log("Successfully got grades from StudentVue!")
+
+# Write to a file
+with open(str(ROOT_PATH / "data-output.json"), "w") as output_file:
+    output_file.truncate(0)
+    output_file.write(dumps(grades, indent=4))
+Logger.log("Successfully wrote grades to data-output.json!")
