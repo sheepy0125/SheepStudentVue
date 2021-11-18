@@ -1,18 +1,25 @@
 {% extends "base.html" %} {% block body %}
 <div id="content">
-	<!-- Nav buttons -->
-	<form action="/" method="get">
-		<button type="submit">Back to login</button>
-	</form>
-	<form action="/" method="get">
-		<button type="submit">Refresh grades</button>
-	</form>
-	<h4>
-		<span>This is a CACHED version of your grades. They were last updated on</span>
-		<span>{{ content["last_updated"] }}</span>
-	</h4>
+	<noscript>
+		<h1>Sorry, this requires JavaScript to be enabled for the tabs to work.</h1>
+	</noscript>
+
+	<!-- Navbar -->
+	<div class="course-tabs">
+		{% for course in content["grades"] %}
+		<button
+			onclick="setCourseTab(event, `{{ course['name'] }}`)"
+			class="tab-button"
+			id="{{ course['name'] }} button"
+		>
+			{{ course["name"] }}
+		</button>
+		{% endfor %}
+	</div>
+
+	<!-- Content -->
 	{% for course in content["grades"] %}
-	<fieldset class="course">
+	<fieldset class="course" id="{{ course['name'] }}" style="display: none">
 		<legend><h1>{{ course["name"] }}</h1></legend>
 		<p>Period: {{ course["period"] }}</p>
 		<p>Teacher: {{ course["teacher"] }}</p>
@@ -29,5 +36,46 @@
 		{% endfor %}
 	</fieldset>
 	{% endfor %}
+	<!-- Nav buttons -->
+	<form action="/" method="get">
+		<button type="submit">Back to login</button>
+	</form>
+	<form action="/refetch-grades" method="get">
+		<button type="submit">Re-fetch grades</button>
+	</form>
 </div>
+
+<!-- Tabs -->
+<script>
+	function setCourseTab(event, course) {
+		// Hide all courses
+		const courseContent = document.querySelectorAll(".course");
+		for (let courseIdx = 0; courseIdx < courseContent.length; courseIdx++) {
+			courseContent[courseIdx].style.display = "none";
+		}
+
+		// Remove active tab classes
+		const tabButtons = document.querySelectorAll(".tab-button");
+		for (let buttonIdx = 0; buttonIdx < tabButtons.length; buttonIdx++) {
+			tabButtons[buttonIdx].className = tabButtons[buttonIdx].className.replace(
+				" active",
+				""
+			);
+		}
+
+		// Current tab
+		document.getElementById(course).style.display = "block";
+		event.currentTarget.className += " active";
+	}
+
+	// Set the first tab to be active
+	setCourseTab(
+		{
+			currentTarget: document.getElementById(
+				"{{ content['grades'][0]['name'] }} button"
+			),
+		},
+		"{{ content['grades'][0]['name'] }}"
+	);
+</script>
 {% endblock %}

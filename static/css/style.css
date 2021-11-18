@@ -2,8 +2,11 @@
 
 /* Global */
 :root {
-	--bg-color: wheat;
-	--bg-color-content: pink;
+	--bg-color: #fefefe;
+	--bg-color-content: #eee;
+	--bg-color-course: hsl(0, 0%, 95%);
+	--bg-color-course-hover: hsl(0, 0%, 90%);
+	--bg-color-course-selected: hsl(0, 0%, 80%);
 	--bg-color-course: hsl(0, 0%, 95%);
 	--corner-roundness: 1em;
 }
@@ -61,4 +64,26 @@ button[type="submit"] {
 	display: block;
 	width: max-content;
 	text-align: center;
+}
+
+/* Tabs */
+.course-tabs {
+	margin: 0 auto;
+	width: max-content;
+	padding: 1em;
+	background-color: var(--bg-color-course);
+}
+
+.tab-button {
+	background-color: inherit;
+	cursor: pointer;
+	padding: 14px 16px;
+}
+
+.tab-button.active {
+	background-color: var(--bg-color-course-selected);
+}
+
+.tab-button:hover {
+	background-color: var(--bg-color-course-hover);
 }
