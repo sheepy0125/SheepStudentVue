@@ -1,0 +1,13 @@
+{% extends "base.html" %} {% block body %}
+<div id="content">
+	<fieldset>
+		<legend><h1>An error has occurred!</h1></legend>
+		<p>{{ error }}</p>
+	</fieldset>
+	<!-- Nav buttons -->
+	<form action="/" method="get">
+		<button type="submit">Back to login</button>
+	</form>
+</div>
+
+{% endblock %}

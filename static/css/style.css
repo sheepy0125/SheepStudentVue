@@ -1,5 +1,6 @@
 /* CSS for SheepStudentVue */
 
+/* Global */
 :root {
 	--bg-color: wheat;
 	--bg-color-content: pink;
@@ -17,6 +18,17 @@ html {
 	border-radius: var(--corner-roundness);
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	color: red;
+	text-align: center;
+}
+
+/* Widgets */
 #content {
 	margin: 0 auto;
 	width: 90%;
@@ -31,16 +43,6 @@ html {
 	background-color: var(--bg-color-course);
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-	color: red;
-	text-align: center;
-}
-
 .assignment {
 	margin: 1em 1em;
 	text-align: left;
@@ -49,4 +51,14 @@ h6 {
 footer {
 	text-align: center;
 	font-size: 0.75em;
+}
+
+/* Forms */
+label,
+input,
+button[type="submit"] {
+	margin: 0 auto;
+	display: block;
+	width: max-content;
+	text-align: center;
 }

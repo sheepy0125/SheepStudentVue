@@ -1,0 +1,33 @@
+{% extends "base.html" %} {% block body %}
+<div id="content">
+	<!-- Nav buttons -->
+	<form action="/" method="get">
+		<button type="submit">Back to login</button>
+	</form>
+	<form action="/" method="get">
+		<button type="submit">Refresh grades</button>
+	</form>
+	<h4>
+		<span>This is a CACHED version of your grades. They were last updated on</span>
+		<span>{{ content["last_updated"] }}</span>
+	</h4>
+	{% for course in content["grades"] %}
+	<fieldset class="course">
+		<legend><h1>{{ course["name"] }}</h1></legend>
+		<p>Period: {{ course["period"] }}</p>
+		<p>Teacher: {{ course["teacher"] }}</p>
+		<p>Grade: {{ course["grade"] }}%</p>
+		{% for assignment in course["assignments"] %}
+		<fieldset class="assignment">
+			<legend><h4>{{ assignment["name"] }}</h4></legend>
+			<p>Due Date: {{ assignment["due_date"] }}</p>
+			<p>Grade: {{ assignment["grade"] }}%</p>
+			<p>Points: {{ assignment["points"] }}</p>
+			<p>Assigned date: {{ assignment["assigned_date"] }}</p>
+			<p>Due date: {{ assignment["due_date"] }}</p>
+		</fieldset>
+		{% endfor %}
+	</fieldset>
+	{% endfor %}
+</div>
+{% endblock %}

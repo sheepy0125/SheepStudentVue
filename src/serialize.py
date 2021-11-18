@@ -12,11 +12,9 @@ from json import load, dump
 def serialize(data: dict) -> dict:
     """Converts the loads of data to less data"""
 
-    serialized_data: dict | list = {}  # Will be a list at the end
-
     ### Cut all unneeded data out ###
-    serialized_data = data["Gradebook"]["Courses"]["Course"]  # List of courses
-    for course_idx, course in enumerate(serialized_data):
+    grades: dict = data["Gradebook"]["Courses"]["Course"]  # List of courses
+    for course_idx, course in enumerate(grades):
         course = {
             "name": course["@Title"],
             "period": course["@Period"],
@@ -24,9 +22,9 @@ def serialize(data: dict) -> dict:
             "grade": course["Marks"]["Mark"]["@CalculatedScoreString"],
             "assignments": [],
         }
-        for assignment in serialized_data[course_idx]["Marks"]["Mark"]["Assignments"][
-            "Assignment"
-        ]:
+        for assignment in (
+            grades[course_idx]["Marks"]["Mark"]["Assignments"]["Assignment"],
+        )[0]:
             course["assignments"].append(
                 {
                     "name": assignment["@Measure"],
@@ -38,9 +36,9 @@ def serialize(data: dict) -> dict:
                 }
             )
 
-        serialized_data[course_idx] = course
+        grades[course_idx] = course
 
-    return serialized_data
+    return {"last_updated": f"{Logger.time()}", "grades": grades}
 
 
 ### Test ###

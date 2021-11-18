@@ -1,1 +1,1 @@
-FLASK_APP=src/main.py
+FLASK_APP=src/main_flask.py

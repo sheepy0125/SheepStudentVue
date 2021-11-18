@@ -43,11 +43,6 @@ def check_config(config: dict) -> bool:
     error = None
 
     try:
-        assert isinstance(config["username"], str), "Username is not a string"
-        assert config["username"] != "", "Username is empty"
-        assert config["username"].isdigit(), "Username is not a number"
-        assert len(config["username"]) == 9, "Username is not 9 characters long"
-        assert isinstance(config["password"], str), "Password is not a string"
         assert isinstance(config["domain"], str), "Domain is not a string"
 
     except Exception as exc:
