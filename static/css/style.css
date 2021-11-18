@@ -87,3 +87,29 @@ button[type="submit"] {
 .tab-button:hover {
 	background-color: var(--bg-color-course-hover);
 }
+
+/* Tables */
+table,
+td,
+th {
+	background-color: white;
+	border: 2px solid black;
+	border-radius: 0;
+}
+
+table {
+	border-collapse: collapse;
+	margin: 0 auto;
+	width: 100%;
+}
+
+th:first-child {
+	/* The first one is the name */
+	width: 100%;
+	height: 30px;
+}
+
+td {
+	text-align: center;
+	padding: 5px;
+}

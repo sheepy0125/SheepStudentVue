@@ -19,23 +19,26 @@
 
 	<!-- Content -->
 	{% for course in content["grades"] %}
-	<fieldset class="course" id="{{ course['name'] }}" style="display: none">
-		<legend><h1>{{ course["name"] }}</h1></legend>
-		<p>Period: {{ course["period"] }}</p>
-		<p>Teacher: {{ course["teacher"] }}</p>
-		<p>Grade: {{ course["grade"] }}%</p>
+	<table class="course" id="{{ course['name'] }}" style="display: none">
+		<tr>
+			<th>Name</th>
+			<th>Grade</th>
+			<th>Due date</th>
+			<th>Points</th>
+			<th>Assigned date</th>
+		</tr>
 		{% for assignment in course["assignments"] %}
-		<fieldset class="assignment">
-			<legend><h4>{{ assignment["name"] }}</h4></legend>
-			<p>Due Date: {{ assignment["due_date"] }}</p>
-			<p>Grade: {{ assignment["grade"] }}%</p>
-			<p>Points: {{ assignment["points"] }}</p>
-			<p>Assigned date: {{ assignment["assigned_date"] }}</p>
-			<p>Due date: {{ assignment["due_date"] }}</p>
-		</fieldset>
+		<tr>
+			<td>{{ assignment["name"] }}</td>
+			<td>{{ assignment["grade"] }}%</td>
+			<td>{{ assignment["due_date"] }}</td>
+			<td>{{ assignment["points"] }}</td>
+			<td>{{ assignment["assigned_date"] }}</td>
+		</tr>
 		{% endfor %}
-	</fieldset>
+	</table>
 	{% endfor %}
+
 	<!-- Nav buttons -->
 	<form action="/" method="get">
 		<button type="submit">Back to login</button>
