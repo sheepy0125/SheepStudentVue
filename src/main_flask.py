@@ -29,16 +29,6 @@ def get_gradebook(username: str, password: str) -> dict:
     return gradebook_object.grades
 
 
-def load_gradebooks(username: str, password: str, use_cache: bool = True) -> dict:
-    """Loads a gradebook for a student (warning: no error handling)"""
-
-    # If not cached, regenerate
-    if (not use_cache) or (username not in student_gradebooks.keys()):
-        return get_gradebook(username, password)
-
-    return student_gradebooks[username].grades
-
-
 ### Routes ###
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -53,7 +43,7 @@ def index():
 
     try:
         # Get the gradebook content
-        gradebook = load_gradebooks(username, password)
+        gradebook = get_gradebook(username, password)
     except Exception as error:
         Logger.log_error(error)
 
@@ -65,7 +55,9 @@ def index():
             ),
         )
 
-    return render_template("grade_viewer.html", content=gradebook)
+    return render_template(
+        "grade_viewer.html", content=gradebook, username=username, password=password
+    )
 
 
 ### Run ###
