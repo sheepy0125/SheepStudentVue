@@ -19,24 +19,30 @@
 
 	<!-- Content -->
 	{% for course in content["grades"] %}
-	<table class="course" id="{{ course['name'] }}" style="display: none">
-		<tr>
-			<th>Name</th>
-			<th>Grade</th>
-			<th>Due date</th>
-			<th>Points</th>
-			<th>Assigned date</th>
-		</tr>
-		{% for assignment in course["assignments"] %}
-		<tr>
-			<td>{{ assignment["name"] }}</td>
-			<td>{{ assignment["grade"] }}%</td>
-			<td>{{ assignment["due_date"] }}</td>
-			<td>{{ assignment["points"] }}</td>
-			<td>{{ assignment["assigned_date"] }}</td>
-		</tr>
-		{% endfor %}
-	</table>
+	<div class="course" id="{{ course['name'] }}" style="display: none">
+		<h3>Course: {{ course["name"] }}</h1>
+		<h3>Period: {{ course["period"] }}</h1>
+		<h3>Grade: {{ course["grade"] }}</h1>
+		<h3>Teacher: {{ course["teacher"] }}</h1>
+		<table class="">
+			<tr>
+				<th>Name</th>
+				<th>Grade</th>
+				<th>Due date</th>
+				<th>Points</th>
+				<th>Assigned date</th>
+			</tr>
+			{% for assignment in course["assignments"] %}
+			<tr>
+				<td>{{ assignment["name"] }}</td>
+				<td>{{ assignment["grade"] }}%</td>
+				<td>{{ assignment["due_date"] }}</td>
+				<td>{{ assignment["points"] }}</td>
+				<td>{{ assignment["assigned_date"] }}</td>
+			</tr>
+			{% endfor %}
+		</table>
+	</div>
 	{% endfor %}
 
 	<!-- Nav buttons -->
