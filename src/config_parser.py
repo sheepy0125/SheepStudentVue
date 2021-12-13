@@ -9,7 +9,7 @@ from jsonc_parser.errors import FileError, ParserError
 from common import DEFAULT_CONFIG_PATH, Path, Logger
 
 ### Parse ###
-def parse(config_path: Path | str | None = None) -> dict:
+def parse(config_path: Path = None) -> dict:
     """
     Parse config, return a dictionary
     If config_path is None, use default config path
