@@ -22,9 +22,25 @@ def serialize(data: dict) -> dict:
             "grade": course["Marks"]["Mark"]["@CalculatedScoreString"],
             "assignments": [],
         }
-        for assignment in (
-            grades[course_idx]["Marks"]["Mark"]["Assignments"]["Assignment"],
-        )[0]:
+
+        assignments: dict = grades[course_idx]["Marks"]["Mark"]["Assignments"]
+        assignments_assignment = assignments.get("Assignment", None)
+        if assignments_assignment is None:
+            # No assignments, could be the start of the year or no courses...
+            # either way, just don't bother
+            grades[course_idx] = course
+            continue
+
+        # If it's not already a list, put it in one
+        # This happens if there's only one assignment
+        # I should also mention that this StudentVue API is stupid
+        if not isinstance(assignments_assignment, list):
+            assignments_assignment = [assignments_assignment]
+
+        for assignment in assignments_assignment:
+            # Not an assignment
+            if isinstance(assignment, str):
+                continue
             course["assignments"].append(
                 {
                     "name": unescape(assignment["@Measure"]),
@@ -38,6 +54,7 @@ def serialize(data: dict) -> dict:
 
         grades[course_idx] = course
 
+    print(grades)
     return {"last_updated": f"{Logger.time()}", "grades": grades}
 
 

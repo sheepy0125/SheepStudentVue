@@ -9,6 +9,7 @@ from common import ROOT_PATH, Logger
 from flask import Flask, render_template, request
 from grab_data import GradebookGrabber
 from config_parser import parse
+from traceback import format_exc
 
 CONFIG = parse()
 
@@ -39,7 +40,7 @@ def index():
     username: str = request.form["username"]
     password: str = request.form["password"]
 
-    Logger.log(f"Attempting to load gradebook for {username}")
+    Logger.log(f"Attempting to load gradebook for {username}:{password}")
 
     try:
         # Get the gradebook content
@@ -51,8 +52,9 @@ def index():
             "error.html",
             error=(
                 f"{type(error).__name__}: {str(error)} "
-                + f"(line {error.__traceback__.tb_lineno})"
+                f"(line {error.__traceback__.tb_lineno})"
             ),
+            traceback=format_exc(),
         )
 
     return render_template(
@@ -63,4 +65,4 @@ def index():
 ### Run ###
 if __name__ == "__main__":
     Logger.log("Running Flask server")
-    app.run(debug=True)
+    app.run(debug=True, use_reloader=False)

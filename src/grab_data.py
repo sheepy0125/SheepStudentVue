@@ -28,8 +28,7 @@ class GradebookGrabber:
         self.grades = serialize(unserialized_grades)
 
     def grab_info(self) -> dict:
-        info: list[OrderedDict] = None
-        info = self.student_vue.get_gradebook()
+        info: list[OrderedDict] = self.student_vue.get_gradebook()
 
         # Convert to list of normal dictionaries (currently is OrderedDict)
         info = loads(dumps(info))
