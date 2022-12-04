@@ -9,10 +9,12 @@
 	--bg-color-course-selected: hsl(0, 0%, 80%);
 	--bg-color-course: hsl(0, 0%, 95%);
 	--corner-roundness: 1em;
+	--font-primary: sans-serif;
+	--color-primary: red;
 }
 
 html {
-	font-family: sans-serif;
+	font-family: var(--font-primary);
 	background-color: var(--bg-color);
 }
 
@@ -27,7 +29,7 @@ h3,
 h4,
 h5,
 h6 {
-	color: red;
+	color: var(--color-primary);
 	text-align: center;
 }
 
@@ -68,8 +70,9 @@ button[type="submit"] {
 
 /* Tabs */
 .course-tabs {
-	margin: 0 auto;
-	width: max-content;
+	display: flex;
+	justify-content: center;
+	width: 100%;
 	padding: 1em;
 	background-color: var(--bg-color-course);
 }
@@ -78,6 +81,9 @@ button[type="submit"] {
 	background-color: inherit;
 	cursor: pointer;
 	padding: 14px 16px;
+	border: none;
+	font-weight: bold;
+	outline: none;
 }
 
 .tab-button.active {
