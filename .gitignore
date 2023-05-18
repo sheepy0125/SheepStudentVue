@@ -3,3 +3,5 @@ venv/
 .vscode/
 *.jsonc
 *.json
+versioning
+!versioning/SPEC.TXT

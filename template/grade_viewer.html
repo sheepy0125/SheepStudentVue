@@ -24,7 +24,7 @@
 		<h3>Period: {{ course["period"] }}</h1>
 		<h3>Grade: {{ course["grade"] }}</h1>
 		<h3>Teacher: {{ course["teacher"] }}</h1>
-		<table class="">
+		<table aria-describedby="Grades">
 			<tr>
 				<th>Name</th>
 				<th>Grade</th>
@@ -49,12 +49,23 @@
 	<form action="/" method="get">
 		<button type="submit">Back to login</button>
 	</form>
+	<form action="/past" method="post">
+		<!-- Horrible security! -->
+		<input type="hidden" name="username" value="{{ username }}" />
+		<input type="hidden" name="password" value="{{ password }}" />
+		{% if past %}
+		<button type="submit">Back to old grade viewer</button>
+		{% else %}
+		<button type="submit">View older grades</button>
+		{% endif %}
+	</form>
 	<form action="/" method="post">
 		<!-- Horrible security! -->
 		<input type="hidden" name="username" value="{{ username }}" />
 		<input type="hidden" name="password" value="{{ password }}" />
 		<button type="submit">Re-fetch grades</button>
 	</form>
+	
 </div>
 
 <!-- Tabs -->
@@ -62,14 +73,14 @@
 	function setCourseTab(event, course) {
 		// Hide all courses
 		const courseContent = document.querySelectorAll(".course");
-		for (let courseIdx = 0; courseIdx < courseContent.length; courseIdx++) {
-			courseContent[courseIdx].style.display = "none";
+		for (const element of courseContent) {
+			element.style.display = "none";
 		}
 
 		// Remove active tab classes
 		const tabButtons = document.querySelectorAll(".tab-button");
-		for (let buttonIdx = 0; buttonIdx < tabButtons.length; buttonIdx++) {
-			tabButtons[buttonIdx].className = tabButtons[buttonIdx].className.replace(
+		for (const element of tabButtons) {
+			element.className = element.className.replace(
 				" active",
 				""
 			);
