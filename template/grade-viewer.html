@@ -1,0 +1,137 @@
+{% extends "base.html" %} {% block body %}
+<fieldset id="content" class="grade-content">
+	<noscript>
+		<h2>All Grades (No JavaScript)</h2>
+	</noscript>
+
+	<!-- Navbar -->
+	<legend id="course-tabs" style="display: none">
+		<!-- <div id="course-tabs-label"> -->
+		<!-- <span>Courses</span> -->
+		<!-- </div> -->
+		<div>
+			{% for course in content["courses"] %}
+			<button
+				onclick="set_course_tab(event, `{{ course['name'] }}`)"
+				class="tab-button"
+				id="{{ course['name'] }} button"
+			>
+				<strong>{{ course["name"] }}</strong>{% if course["grade"] != SENTINEL_UNKNOWN_INT
+				%} {{ course["grade"] }}%{% endif %}
+			</button>
+			{% endfor %}
+		</div>
+	</legend>
+
+	<!-- Content -->
+	{% for course in content["courses"] %}
+	<div class="course" id="{{ course['name'] }}">
+		<div class="course-information">
+			<p><strong>Course: </strong>{{ course["name"] }}</p>
+			{% if course["grade"] != SENTINEL_UNKNOWN_INT %}
+			<p class="grade"><strong>Grade: </strong><span>{{ course["grade"] }}%</span></p>
+			{% else %}
+			<p></p>
+			{% endif %}
+			<p><strong>Period: </strong>{{ course["period"] }}</p>
+			<p><strong>Teacher: </strong>{{ course["teacher"] }}</p>
+		</div>
+
+		{% if course["assignments"] %}
+		<table aria-describedby="Grades" class="grades-table">
+			<tr>
+				<th>Name</th>
+				<th>Grade</th>
+				<th>Due date</th>
+				<th>Assigned date</th>
+			</tr>
+			{% for assignment in course["assignments"] %}
+			<tr>
+				<td>{{ assignment["name"] }}</td>
+				<td>{{ assignment["grade"] }}%</td>
+				<td>{{ assignment["assigned_date"] }}</td>
+				<td>{{ assignment["due_date"] }}</td>
+			</tr>
+			{% endfor %}
+		</table>
+		{% else %}
+		<h4>No assignments</h4>
+		{% endif %}
+	</div>
+	<noscript>
+		<br />
+		<hr />
+		<br />
+	</noscript>
+	{% endfor %}
+
+	<!-- Nav buttons -->
+	<nav>
+		<!-- Past is set when we are viewing an old grade -->
+		{% if past or is_versioning_available %}
+		<form action="/past" method="get">
+			{% if past %}
+			<button type="submit" class="nav-button">Back to old grade viewer</button>
+			{% else %} {% if is_versioning_available %}
+			<button type="submit" class="nav-button">View older grades</button>
+			{% endif %} {% endif %}
+		</form>
+		{% endif %}
+		<form action="/clear-cookies" method="get">
+			<button type="submit" class="nav-button">Log out</button>
+		</form>
+	</nav>
+</fieldset>
+
+<!-- Tabs -->
+<script type="text/JavaScript">
+	"use strict";
+
+	// Hide all courses
+	function hide_all_courses() {
+		const courseContent = document.querySelectorAll(".course");
+		if (!courseContent) return;
+		for (const element of courseContent) {
+			if (element && element.style)
+				element.style.display = "none";
+		}
+	}
+
+	// Set a course tab
+	function set_course_tab(event, course) {
+		// Hide all courses
+		hide_all_courses();
+
+		// Remove active tab classes
+		const tab_buttons = document.querySelectorAll(".tab-button");
+		for (const element of tab_buttons) {
+			if (!(element && element.className)) continue;
+			element.className = element.className.replace(" active", "");
+		}
+
+		// Current tab
+		// querySelector won't work
+		const current_tab = document.getElementById(course);
+		if (current_tab && current_tab.style)
+			current_tab.style.display = "block";
+		if (event && event.currentTarget && event.currentTarget.className)
+			event.currentTarget.className += " active";
+	}
+
+	// Show the tab bar since we know JavaScript is running
+	const tab_bar = document.querySelector("#course-tabs");
+	if (tab_bar) tab_bar.style.display = "block";
+
+	// Set the first tab to be active with a mock event.
+	// All we need is `currentTarget` to be a ref to the button.
+	set_course_tab(
+		{
+			// querySelector won't work
+			currentTarget: document.getElementById(
+				"{{ content['grades'][0]['name'] }} button"
+			),
+		},
+		"{{ content['grades'][0]['name'] }}"
+	);
+</script>
+{% endblock %}

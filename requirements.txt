@@ -2,3 +2,6 @@ jsonc-parser
 platformdirs
 studentvue
 flask
+dacite
+cryptography
+tzlocal

@@ -1,0 +1,23 @@
+{% extends "base.html" %} {% block body %}
+<fieldset id="content">
+	<legend><h1>Source code</h1></legend>
+	<p>Discount git clone: <pre>wget -r <url>/source-list</pre></p>
+	<ul>
+		{% for directory in files %}
+		<li>/{{ directory["name"] }}</li>
+		<ul>
+			{% for file in directory["files"] %}
+			<li><a href="/source/{{ directory['name'] }}/{{ file }}">{{ file }}</a></li>
+			{% endfor %}
+		</ul>
+		{% endfor %}
+	</ul>
+
+	<!-- Nav buttons -->
+	<nav>
+		<form action="/?login=true">
+			<button type="submit" class="nav-button">Back to home</button>
+		</form>
+	</nav>
+</fieldset>
+{% endblock %}

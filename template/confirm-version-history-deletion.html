@@ -1,0 +1,26 @@
+{% extends "base.html" %} {% block body %}
+<fieldset id="content">
+	<legend><h1>Confirm deletion of versioning history</h1></legend>
+	<p>Are you sure you wish to do this? <strong>All data will permanently be deleted.</strong></p>
+	<hr />
+	<p>You have the following options:</p>
+	<form action="/delete-versioning-history" method="post">
+		<!-- No = 1
+				 Yes = 2 -->
+		<input class="inline" type="radio" name="option" id="yes" checked value="2" />
+		<label class="inline" for="yes">YES, DELETE</label>
+		<br />
+		<input class="inline" type="radio" name="option" id="no" value="1" />
+		<label class="inline" for="no">NO, KEEP</label>
+		<br />
+		<button class="inline" type="submit">Submit</button>
+	</form>
+	<!-- Nav buttons -->
+	<nav>
+		<form action="/clear-cookies" method="get">
+			<button type="submit" class="nav-button">Log out</button>
+		</form>
+	</nav>
+</fieldset>
+
+{% endblock %}

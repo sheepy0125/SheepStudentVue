@@ -1,0 +1,120 @@
+{% extends "base.html" %} {% block body %}
+<fieldset id="content" class="center">
+	<legend><h1>About SheepStudentVue</h1></legend>
+	<!-- Quick answers -->
+	<div>
+		<h2>The quick answers</h2>
+		<p>This open source website serves data from StudentVue and acts only as a frontend.</p>
+		<p>Passwords and usernames are not stored on the server.</p>
+		<p>This website saves your grades in a version history so you can go back in time.</p>
+		<p>Gradebooks are encrypted with your password and username.</p>
+		<p>
+			You can always delete your gradebook data at
+			<a href="/delete-versioning-history">Delete Data</a>.
+		</p>
+		<p>
+			<strong
+				>As with all websites, you must trust the owner of the instance as the source code
+				can be changed. You can check out <a href="/source-list">Source Code</a>, but a
+				malicious webmaster can simply modify that route.
+			</strong>
+		</p>
+	</div>
+	<br />
+	<hr />
+	<br />
+	<!-- Trust -->
+	<div>
+		<h2>Trust</h2>
+		<p>
+			Before you enter your credentials to this site, you must ensure trust in the webmaster.
+		</p>
+		<p>
+			You may check out the <a href="/source-list">Source Code</a> to this website, but
+			there's no way in knowing that the webmaster hasn't modified that route to show
+			different contents.
+		</p>
+		<p>
+			Therefore, you have no way of knowing the webmaster does not log your passwords or
+			completely skimp on encryption.
+		</p>
+		<p>If you have doubts, please host this instance yourself.</p>
+		<p>
+			A word of caution to webmasters: at least for the school I go to, it's an actual crime
+			to log into another student's account.
+		</p>
+	</div>
+	<br />
+	<hr />
+	<br />
+	<!-- Versioning -->
+	<div>
+		<h2>Versioning system</h2>
+		<p>
+			The versioning system saves your gradebook every time you fetch your grades and allows
+			you to view past grades.
+		</p>
+		<p>
+			Should you wish to, you can <a href="/delete-versioning-history">Delete your Data</a> at
+			any time!
+		</p>
+	</div>
+	<br />
+	<hr />
+	<br />
+	<!-- Tech stack -->
+	<div>
+		<h2>How this website was made</h2>
+		<p>
+			This website uses Flask to serve webpages and StudentVue.py to retrieve information from
+			StudentVue.
+		</p>
+		<p>
+			The source code to this website is available at
+			<a href="/source-list">Source Code</a>, though it's hard to tell if it's been modified.
+		</p>
+	</div>
+	<br />
+	<hr />
+	<br />
+	<!-- Encryption -->
+	<div>
+		<h2>How encryption works</h2>
+		<p>
+			Every grade saved to versioning is encrypted! Your grades (hopefully) shall be
+			unbeknownst to a webmaster who does not know your password. Of course, the webmaster
+			could just turn this website into a honeypot and you have no way to validate it's not.
+		</p>
+		<p>
+			Factors into encryption are the username, password, and a "global salt" / master key
+			defined in the config file.
+		</p>
+		<p>
+			The encryption key is a hash of those in the format
+			<code>{password}{master_key}{username}{password[::-1]}</code>
+			.
+		</p>
+		<p>
+			For validating a hash before trying to decrypt it, the format is
+			<code>{username}{password}{master_key}.</code>
+		</p>
+		<p>Hashes are conducted using SHA256, and {en,de}cryption is done through Fernet.</p>
+		<p>
+			Although there are no unique salts for a user, the username is included in the hash
+			function, or in other words, no hashes are shared between any two users.
+		</p>
+		<p>
+			The migration of passwords is included in this encryption. See
+			<code>src/versioning.py</code> for the sauce.
+		</p>
+	</div>
+	<br />
+	<hr />
+	<br />
+	<!-- Nav buttons -->
+	<form action="/?login=true" class="center" method="get">
+		<button type="submit">Back to home</button>
+	</form>
+</fieldset>
+
+{% endblock %}

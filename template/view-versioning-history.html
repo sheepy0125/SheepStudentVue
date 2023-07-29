@@ -1,0 +1,61 @@
+<!-- New table definers -->
+{% set new_table = namespace(bool = true) %} {% set idx = namespace(int = -1) %}
+<!-- Course names -->
+{% set current_course_names = namespace(list = []) %} {% set last_course_names = namespace(list =
+[]) %}
+<!--  -->
+{% extends "base.html" %} {% block body %}
+<fieldset id="content" class="grade-content">
+	<legend><h1>Past grades</h1></legend>
+	{% for entry in entries %}
+	<!-- Update the idx -->
+	{% set idx.int = idx.int + 1 %}
+	<!-- Set last course names to the current -->
+	{% set last_course_names.list = current_course_names.list %}
+	<!-- Update current course names -->
+	{% set current_course_names.list = course_names(entry) %}
+	<!-- Determine if a new table should be made. If so, end the previous table unless this is the first table.-->
+	{% set new_table.bool = current_course_names.list != last_course_names.list %}
+	{% if new_table.bool %}
+	{% if idx.int > 0 %}
+	</table>
+	{% endif %}
+	<table aria-describedby="Past grades" class="past-grades-table">
+		<tr>
+			<th>Date</th>
+			{% for course in entry["courses"] %}
+			<th>{{ course["name"] }}</th>
+			{% endfor %}
+		</tr>
+		{% endif %}
+		<tr>
+			<form action="/past" method="post">
+				<input type="hidden" name="timestamp" value="{{ entry['timestamp'] }}" />
+				<td>
+					<button class="inline" type="submit">
+						{{ datetime.fromtimestamp(entry["timestamp"], local_timezone) }}
+					</button>
+				</td>
+			</form>
+
+			{% for course in entry["courses"] %}
+			<td>
+				{% if course["grade"] != SENTINEL_UNKNOWN_INT %} {{ course["grade"] }} {% endif %}
+			</td>
+			{% endfor %}
+		</tr>
+	{% endfor %}
+	</table>
+
+	<!-- Nav buttons -->
+	<nav>
+		<form action="/delete-versioning-history"><button class="nav-button">Delete all history</button></form>
+		<form action="/">
+			<button type="submit" class="nav-button">Refetch grades</button>
+		</form>
+		<form action="/clear-cookies" method="get">
+			<button type="submit" class="nav-button">Log out</button>
+		</form>
+	</nav>
+</fieldset>
+{% endblock %}
