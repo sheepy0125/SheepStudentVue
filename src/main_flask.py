@@ -219,6 +219,7 @@ def index_route():
     """
 
     username, password, obtained_creds = get_credentials()
+    past: bool = request.form.get("past", False)
 
     session["username"]: str = username
     session["password"]: str = password
@@ -237,6 +238,10 @@ def index_route():
         )
         response.delete_cookie("password")
         return response
+
+    # Past
+    if past:
+        session["redirect"] = "past_grades_route"
 
     # Redirect handler
     if (to_redirect := session.get("redirect")) and len(to_redirect) > 0:
@@ -572,4 +577,4 @@ def source_file_route(path: str):
 ### Run ###
 if __name__ == "__main__":
     Logger.log("Running Flask server")
-    app.run(port=CONFIG["port"], host="0.0.0.0", debug=False, use_reloader=True)
+    app.run(port=CONFIG["port"], host="0.0.0.0", debug=True, use_reloader=True)
