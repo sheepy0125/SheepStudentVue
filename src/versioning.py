@@ -116,7 +116,7 @@ class Versioning:
                 timestamp=self.serialized.last_updated,
                 courses=[
                     VersioningCourseItem(course.name, course.grade)
-                    for course in self.serialized.grades
+                    for course in self.serialized.courses
                 ],
             )
         )

@@ -33,6 +33,7 @@
 			{% else %}
 			<p></p>
 			{% endif %}
+			<p><strong>Room: </strong>{{ course["room"] }}</p>
 			<p><strong>Period: </strong>{{ course["period"] }}</p>
 			<p><strong>Teacher: </strong>{{ course["teacher"] }}</p>
 		</div>
@@ -42,15 +43,23 @@
 			<tr>
 				<th>Name</th>
 				<th>Grade</th>
+				<th>Weight / Type</th>
 				<th>Due date</th>
 				<th>Assigned date</th>
 			</tr>
 			{% for assignment in course["assignments"] %}
 			<tr>
 				<td>{{ assignment["name"] }}</td>
-				<td>{{ assignment["grade"] }}%</td>
-				<td>{{ assignment["assigned_date"] }}</td>
+				<td>
+					{% if assignment["grade"] != SENTINEL_UNKNOWN_INT %} {{ assignment["grade"] }}%
+					{% endif %}
+				</td>
+				<td>
+					{{ assignment["weight"] }} ({{ (course["weights"][assignment["weight"]] * 100)
+					// 1}}%)
+				</td>
 				<td>{{ assignment["due_date"] }}</td>
+				<td>{{ assignment["assigned_date"] }}</td>
 			</tr>
 			{% endfor %}
 		</table>
@@ -128,10 +137,10 @@
 		{
 			// querySelector won't work
 			currentTarget: document.getElementById(
-				"{{ content['grades'][0]['name'] }} button"
+				"{{ content['courses'][0]['name'] }} button"
 			),
 		},
-		"{{ content['grades'][0]['name'] }}"
+		"{{ content['courses'][0]['name'] }}"
 	);
 </script>
 {% endblock %}

@@ -205,7 +205,7 @@ table {
 	width: 100%;
 }
 table.grades-table th:first-child {
-	width: 80%;
+	width: 70%;
 	height: 4em;
 }
 table.past-grades-table th:first-child {

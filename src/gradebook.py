@@ -27,7 +27,7 @@ class Assignment:
     name: str
     assigned_date: str  # mm/dd/yyyy
     due_date: str  # mm/dd/yyyy
-    type: str  # No data of weight is given
+    weight: str  # E.g. "Final Exam" (the trailing "*" is stripped)
     grade: int
     points: str  # E.g. "0.39 / 1.0000"
 
@@ -41,6 +41,8 @@ class Course:
     teacher: str
     period: int
     assignments: list[Assignment]
+    room: str
+    weights: dict[str, float]  # E.g. "Final Exam": 0.10 (the trailing "*" is stripped)
 
 
 @dataclass
@@ -155,18 +157,47 @@ class Gradebook:
 
         courses: dict = self.unserialized_grades["Gradebook"]["Courses"]["Course"]
         for course_idx, course in enumerate(courses):
-            course = Course(
+            grade: str = course["Marks"]["Mark"]["@CalculatedScoreString"]
+            assignments: dict = courses[course_idx]["Marks"]["Mark"]
+
+            weights: dict[str, float] = {}
+            weights_available: bool = True
+            assignments_weights: None | list[dict] = assignments.get(
+                "GradeCalculationSummary"
+            )
+            if assignments_weights is None or assignments_weights == {}:
+                weights_available: bool = False
+            else:
+                assignments_weights: dict = assignments_weights["AssignmentGradeCalc"]
+            if weights_available and (
+                not isinstance(assignments_weights, list)
+                and isinstance(assignments_weights, dict)
+            ):
+                assignments_weights: list[dict] = [assignments_weights]
+            if weights_available:
+                for weight in assignments_weights:
+                    if weight == {}:
+                        continue
+                    percent: str = weight["@Weight"].rstrip("%")
+                    weights[weight["@Type"].rstrip("*")] = (
+                        float(percent) / 100
+                        if percent.isdigit()
+                        else SENTINEL_UNKNOWN_INT
+                    )
+
+            course: Course = Course(
                 name=unescape(_remove_course_id(course["@Title"])),
                 period=course["@Period"],
                 teacher=unescape(course["@Staff"]),
-                grade=course["Marks"]["Mark"]["@CalculatedScoreString"],
+                grade=int(grade) if grade.isdigit() else SENTINEL_UNKNOWN_INT,
                 assignments=[],
+                room=unescape(str(course.get("@Room", SENTINEL_UNKNOWN_STR))),
+                weights=weights,
             )
 
-            assignments: dict = courses[course_idx]["Marks"]["Mark"]["Assignments"]
-            assignments_assignment: None | list[dict] | dict = assignments.get(
-                "Assignment", None
-            )
+            assignments_assignment: None | list[dict] | dict = assignments[
+                "Assignments"
+            ].get("Assignment", None)
             if assignments_assignment is None:
                 # No assignments, could be the start of the year or no courses...
                 # either way, just don't bother (empty course)
@@ -187,6 +218,9 @@ class Gradebook:
                 # Not an assignment
                 if isinstance(assignment, str):
                     continue
+                grade: str = unescape(
+                    str(assignment.get("@Score", SENTINEL_UNKNOWN_INT))
+                )
                 assignment_information = Assignment(
                     name=unescape(assignment.get("@Measure", SENTINEL_UNKNOWN_STR)),
                     assigned_date=unescape(
@@ -195,10 +229,8 @@ class Gradebook:
                     due_date=unescape(
                         assignment.get("@DropEndDate", SENTINEL_UNKNOWN_STR)
                     ),
-                    type=unescape(assignment.get("@Type", SENTINEL_UNKNOWN_STR)),
-                    grade=int(
-                        unescape(str(assignment.get("@Score", SENTINEL_UNKNOWN_INT)))
-                    ),
+                    weight=unescape(assignment.get("@Type")).rstrip("*"),
+                    grade=int(grade) if grade.isdigit() else SENTINEL_UNKNOWN_INT,
                     points=unescape(assignment.get("@Points", SENTINEL_UNKNOWN_STR)),
                 )
                 course.assignments.append(assignment_information)

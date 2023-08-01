@@ -572,4 +572,4 @@ def source_file_route(path: str):
 ### Run ###
 if __name__ == "__main__":
     Logger.log("Running Flask server")
-    app.run(port=CONFIG["port"], host="0.0.0.0", debug=False, use_reloader=False)
+    app.run(port=CONFIG["port"], host="0.0.0.0", debug=False, use_reloader=True)
