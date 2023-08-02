@@ -234,6 +234,8 @@ def index_route():
                 LOGIN_PAGE,
                 username=username if username is not None else "",
                 password=password if password is not None else "",
+                domain=CONFIG["domain"],
+                past=not session["redirect"],
             )
         )
         response.delete_cookie("password")
