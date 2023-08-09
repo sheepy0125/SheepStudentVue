@@ -478,7 +478,9 @@ def delete_versioning_history_route():
 
     # Show confirmation page
     if request.method.lower() == "get":
-        return render_template(CONFIRM_VERSION_HISTORY_DELETION_PAGE)
+        return render_template(
+            CONFIRM_VERSION_HISTORY_DELETION_PAGE, endpoint="/delete-versioning-history"
+        )
 
     # Handle confirmation choice
     choice = int(request.form.get("option", 0))
@@ -517,6 +519,70 @@ def delete_versioning_history_route():
     flash("Version history removed.")
 
     return redirect(get_previous_page())
+
+
+@limiter.limit("1 per 1 second")
+@app.route("/delete-versioning-history-single", methods=["GET", "POST"])
+def delete_versioning_history_single_route():
+    """Delete a single entry of versioning history for a user"""
+
+    username, password, obtained_creds = get_credentials()
+    update_previous_page("/delete-versioning-history-single")
+
+    # Get item
+    timestamp: int
+    try:
+        timestamp: int | None = int(session.get("timestamp", -1))
+        Logger.log(f"Timestamp: {timestamp}")
+        if timestamp < 0:
+            timestamp: int = int(request.form["timestamp"])
+    except (KeyError, ValueError):
+        flash("Invalid timestamp provided.")
+        return redirect(get_previous_page())
+
+    if not obtained_creds:
+        session["timestamp"] = timestamp
+        flash(INPUT_CREDENTIALS_MESSAGE)
+        return redirect("/?login=true&redirect=delete_versioning_history_single_route")
+
+    choice: DeleteVersionHistoryConfirmationChoice.VARIANT = int(
+        request.form.get("option", -1)
+    )
+
+    # Show confirmation page
+    if choice < 0:
+        session["timestamp"] = timestamp
+        return render_template(
+            CONFIRM_VERSION_HISTORY_DELETION_PAGE,
+            endpoint="/delete-versioning-history-single",
+        )
+
+    # Handle confirmation choice
+    if choice != DeleteVersionHistoryConfirmationChoice.DELETE:
+        flash("Canceled deletion.")
+        return redirect(get_previous_page())
+
+    # Validate credentials
+    try:
+        is_password_valid: bool = (
+            Versioning.hash_for_user(username)
+            == Versioning.hash_generic(username, password, CONFIG["master_key"]),
+        )[0]
+    except FileNotFoundError:
+        ...
+
+    if not is_password_valid:
+        flash(f"{INVALID_CREDENTIALS_MESSAGE.strip('.')} or no versioning history.")
+        return redirect("/?login=true")
+
+    # Delete data
+    versioning: Versioning = Versioning(username, password)
+    versioning.remove_gradebook_entry(timestamp)
+    flash("Version history item removed.")
+
+    del session["timestamp"]
+
+    return redirect("/past")
 
 
 @limiter.limit("1 per second")

@@ -29,16 +29,20 @@
 		</tr>
 		{% endif %}
 		<tr>
-			<form action="/past" method="post">
-				<input type="hidden" name="timestamp" value="{{ entry['timestamp'] }}" />
-				<td>
+			<td style="display: flex; border: none !important">
+				<form action="/past" method="post">
+					<input type="hidden" name="timestamp" value="{{ entry['timestamp'] }}" />
 					<button class="inline" type="submit">
 						{{ datetime.fromtimestamp(entry["timestamp"], local_timezone) }}
 					</button>
-				</td>
-			</form>
-			<form action="/delete-versioning-history-single">
-			</form>
+				</form>
+				<form action="/delete-versioning-history-single" method="post">
+					<input type="hidden" name="timestamp" value="{{ entry['timestamp'] }}" />
+					<button class="inline" type="submit">
+						Delete
+					</button>
+				</form>
+			</td>
 
 			{% for course in entry["courses"] %}
 			<td>
