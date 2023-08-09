@@ -24,7 +24,12 @@ from flask import (
     url_for,
 )
 from tzlocal import get_localzone
-from gradebook import Gradebook, GradebookInformation, SENTINEL_UNKNOWN_INT
+from gradebook import (
+    Gradebook,
+    GradebookInformation,
+    SENTINEL_UNKNOWN_INT,
+    SENTINEL_UNKNOWN_STR,
+)
 from versioning import Versioning, VersioningItem
 from tools import VersioningMismatchedCredentialsException
 from config_parser import parse
@@ -305,6 +310,7 @@ def index_route():
             past=False,
             is_versioning_available=is_versioning_available,
             SENTINEL_UNKNOWN_INT=SENTINEL_UNKNOWN_INT,
+            SENTINEL_UNKNOWN_STR=SENTINEL_UNKNOWN_STR,
         )
     )
     response.set_cookie("username", username)
@@ -376,6 +382,7 @@ def past_grades_route():
         past=True,
         is_versioning_available=True,
         SENTINEL_UNKNOWN_INT=SENTINEL_UNKNOWN_INT,
+        SENTINEL_UNKNOWN_STR=SENTINEL_UNKNOWN_STR,
     )
 
 

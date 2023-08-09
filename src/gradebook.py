@@ -6,6 +6,7 @@ Licensed under the Unlicense (P.D.)
 
 ### Setup ###
 from time import time
+from typing import Any, Callable
 from dataclasses import dataclass
 from collections import OrderedDict
 from json import loads, dumps
@@ -20,6 +21,22 @@ SENTINEL_UNKNOWN_STR: str = "UNKNOWN"
 SENTINEL_UNKNOWN_INT: int = -100
 
 
+### Auxiliary functions ###
+def _try_cast(into: Callable, data: Any) -> Any | str | int:
+    try:
+        return into(data)
+    except Exception as _:  # pylint:disable=broad-exception-caught
+        if into == str:
+            return SENTINEL_UNKNOWN_STR
+        return SENTINEL_UNKNOWN_INT
+
+
+def _and(maybe_sentinel: Any, not_sentinel: Callable) -> None | Any:
+    if maybe_sentinel in (SENTINEL_UNKNOWN_INT, SENTINEL_UNKNOWN_STR):
+        return None
+    return not_sentinel(maybe_sentinel)
+
+
 @dataclass
 class Assignment:
     """An assignment for a :class:`Course`"""
@@ -28,7 +45,7 @@ class Assignment:
     assigned_date: str  # mm/dd/yyyy
     due_date: str  # mm/dd/yyyy
     weight: str  # E.g. "Final Exam" (the trailing "*" is stripped)
-    grade: int
+    grade: str
     points: str  # E.g. "0.39 / 1.0000"
 
 
@@ -117,6 +134,7 @@ class Gradebook:
             return
 
         self.unserialized_grades: dict = self._grab_info()
+        print(self.unserialized_grades)
         self.grades: GradebookInformation = self._serialize()
 
     def save(self) -> None:
@@ -179,17 +197,15 @@ class Gradebook:
                     if weight == {}:
                         continue
                     percent: str = weight["@Weight"].rstrip("%")
-                    weights[weight["@Type"].rstrip("*")] = (
-                        float(percent) / 100
-                        if percent.isdigit()
-                        else SENTINEL_UNKNOWN_INT
+                    weights[weight["@Type"].rstrip("*")] = _and(
+                        _try_cast(float, percent), lambda p: p / 100
                     )
 
             course: Course = Course(
                 name=unescape(_remove_course_id(course["@Title"])),
                 period=course["@Period"],
                 teacher=unescape(course["@Staff"]),
-                grade=int(grade) if grade.isdigit() else SENTINEL_UNKNOWN_INT,
+                grade=_try_cast(int, grade),
                 assignments=[],
                 room=unescape(str(course.get("@Room", SENTINEL_UNKNOWN_STR))),
                 weights=weights,
@@ -219,8 +235,10 @@ class Gradebook:
                 if isinstance(assignment, str):
                     continue
                 grade: str = unescape(
-                    str(assignment.get("@Score", SENTINEL_UNKNOWN_INT))
+                    str(assignment.get("@Score", SENTINEL_UNKNOWN_STR))
                 )
+                if grade in ("Not Due", "Not Graded"):
+                    grade: str = str(SENTINEL_UNKNOWN_STR)
                 assignment_information = Assignment(
                     name=unescape(assignment.get("@Measure", SENTINEL_UNKNOWN_STR)),
                     assigned_date=unescape(
@@ -230,7 +248,7 @@ class Gradebook:
                         assignment.get("@DropEndDate", SENTINEL_UNKNOWN_STR)
                     ),
                     weight=unescape(assignment.get("@Type")).rstrip("*"),
-                    grade=int(grade) if grade.isdigit() else SENTINEL_UNKNOWN_INT,
+                    grade=grade,
                     points=unescape(assignment.get("@Points", SENTINEL_UNKNOWN_STR)),
                 )
                 course.assignments.append(assignment_information)

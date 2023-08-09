@@ -5,3 +5,4 @@ flask
 dacite
 cryptography
 tzlocal
+flask_limiter

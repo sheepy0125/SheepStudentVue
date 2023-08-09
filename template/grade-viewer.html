@@ -51,7 +51,7 @@
 			<tr>
 				<td>{{ assignment["name"] }}</td>
 				<td>
-					{% if assignment["grade"] != SENTINEL_UNKNOWN_INT %} {{ assignment["grade"] }}%
+					{% if assignment["grade"] != SENTINEL_UNKNOWN_STR %} {{ assignment["grade"] }}%
 					{% endif %}
 				</td>
 				<td>
