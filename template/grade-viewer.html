@@ -55,8 +55,8 @@
 					{% endif %}
 				</td>
 				<td>
-					{{ assignment["weight"] }} ({{ (course["weights"][assignment["weight"]] * 100)
-					// 1}}%)
+					{{ assignment["weight"] }} {% if assignment["weight"] in course["weights"] %}({{
+					(course["weights"][assignment["weight"]] * 100) // 1}}%){% endif %}
 				</td>
 				<td>{{ assignment["due_date"] }}</td>
 				<td>{{ assignment["assigned_date"] }}</td>
