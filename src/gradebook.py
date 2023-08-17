@@ -134,7 +134,6 @@ class Gradebook:
             return
 
         self.unserialized_grades: dict = self._grab_info()
-        print(self.unserialized_grades)
         self.grades: GradebookInformation = self._serialize()
 
     def save(self) -> None:
